@@ -1,0 +1,108 @@
+/* TABLE */
+.modern-table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  background: #1e293b;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.modern-table th {
+  background: #020617;
+  padding: 12px;
+  text-align: left;
+}
+
+.modern-table td {
+  padding: 12px;
+  border-bottom: 1px solid #334155;
+}
+
+/* BUTTONS */
+.btn-primary {
+  background: #3b82f6;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: #64748b;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
+
+/* TASK LIST */
+.task-list {
+  margin-top: 30px;
+}
+
+.task-item {
+  background: #1e293b;
+  padding: 10px;
+  margin: 8px 0;
+  display: flex;
+  justify-content: space-between;
+  border-radius: 6px;
+}
+
+.done {
+  color: #22c55e;
+}
+
+.pending {
+  color: orange;
+}
+
+/* MODAL */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+}
+
+.modal textarea {
+  width: 100%;
+  height: 100px;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+}
+
+.modal-actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-actions button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.modal-actions .cancel {
+  background: red;
+  color: white;
+}
