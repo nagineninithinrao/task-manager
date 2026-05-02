@@ -1,26 +1,21 @@
 import Task from "../models/Task.js";
 
 /**
- * =========================
- * CREATE TASK (ADMIN ONLY)
- * =========================
+ * CREATE TASK (ADMIN)
  */
 export const createTask = async (req, res) => {
   try {
-    const { title, description, projectId, assignedTo, dueDate } = req.body;
+    const { title, assignedTo, duration, projectId } = req.body;
 
-    if (!title || !assignedTo) {
-      return res
-        .status(400)
-        .json({ message: "Title and assigned user required" });
+    if (!projectId) {
+      return res.status(400).json({ message: "Project required" });
     }
 
     const task = await Task.create({
       title,
-      description,
-      projectId,
       assignedTo,
-      dueDate,
+      duration,
+      projectId, // 🔥 CONNECTED
     });
 
     res.json(task);
@@ -31,49 +26,86 @@ export const createTask = async (req, res) => {
 };
 
 /**
- * =========================
- * GET TASKS (ROLE BASED)
- * =========================
- */
-export const getTasks = async (req, res) => {
-  try {
-    let tasks;
-
-    // 👑 ADMIN → see all tasks in project
-    if (req.user.role === "Admin") {
-      tasks = await Task.find({
-        projectId: req.params.projectId,
-      }).populate("assignedTo", "name email");
-    }
-    // 👤 MEMBER → see only assigned tasks
-    else {
-      tasks = await Task.find({
-        projectId: req.params.projectId,
-        assignedTo: req.user.id,
-      });
-    }
-
-    res.json(tasks);
-  } catch (err) {
-    console.log("GET TASKS ERROR:", err);
-    res.status(500).json({ message: err.message });
-  }
-};
-
-/**
- * =========================
- * UPDATE TASK STATUS (MEMBER)
- * =========================
+ * ADMIN → VIEW USER TASKS
  */
 export const updateTaskStatus = async (req, res) => {
   try {
-    const { status } = req.body;
+    const status = req.body?.status || "Done";
+    const submissionLink = req.body?.submissionLink;
+
+    const updateData = {
+      status,
+    };
+
+    if (submissionLink) {
+      updateData.submissionLink = submissionLink;
+    }
+
+    if (req.file) {
+      updateData.submissionFile = req.file.path;
+    }
+
+    // 🔥 IMPORTANT: use findByIdAndUpdate (NO full validation)
+    const task = await Task.findByIdAndUpdate(req.params.id, updateData, {
+      new: true,
+    });
+
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    res.json(task);
+  } catch (err) {
+    console.log("UPDATE STATUS ERROR:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+/**
+ * ADMIN → GET ALL TASKS (FOR DASHBOARD)
+ */
+export const getAllTasks = async (req, res) => {
+  try {
+    const tasks = await Task.find().populate("assignedTo", "name email");
+    res.json(tasks);
+  } catch (err) {
+    console.log("GET ALL TASKS ERROR:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+export const getMyTasks = async (req, res) => {
+  try {
+    const tasks = await Task.find({
+      assignedTo: req.user.id,
+    });
+
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+//task update by admin
+// ✏️ UPDATE TASK
+export const updateTask = async (req, res) => {
+  try {
+    const { title, duration } = req.body;
 
     const task = await Task.findById(req.params.id);
 
-    if (!task) return res.status(404).json({ message: "Task not found" });
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
 
-    task.status = status;
+    if (title) task.title = title;
+
+    if (duration) {
+      task.duration = Number(duration);
+
+      const now = new Date();
+      task.dueDate = new Date(
+        now.getTime() + task.duration * 24 * 60 * 60 * 1000,
+      );
+    }
+
     await task.save();
 
     res.json(task);
@@ -83,11 +115,21 @@ export const updateTaskStatus = async (req, res) => {
   }
 };
 
-/**
- * =========================
- * 🔥 GET TASKS BY USER (ADMIN)
- * =========================
- */
+// 🗑 DELETE TASK
+export const deleteTask = async (req, res) => {
+  try {
+    const task = await Task.findByIdAndDelete(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    res.json({ message: "Task deleted" });
+  } catch (err) {
+    console.log("DELETE TASK ERROR:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
 export const getTasksByUser = async (req, res) => {
   try {
     const tasks = await Task.find({
@@ -96,7 +138,18 @@ export const getTasksByUser = async (req, res) => {
 
     res.json(tasks);
   } catch (err) {
-    console.log("GET TASKS BY USER ERROR:", err);
+    console.log("GET USER TASKS ERROR:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+export const getTasksByProject = async (req, res) => {
+  try {
+    const tasks = await Task.find({
+      projectId: req.params.projectId,
+    }).populate("assignedTo", "name email");
+
+    res.json(tasks);
+  } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };

@@ -11,16 +11,33 @@ export default function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
+  const [duration, setDuration] = useState("");
+
   const [users, setUsers] = useState([]);
 
+  // submission states
+  const [links, setLinks] = useState({});
+  const [files, setFiles] = useState({});
+
+  // =====================
+  // FETCH TASKS
+  // =====================
   const fetchTasks = async () => {
-    const { data } = await API.get(`/tasks/${projectId}`);
-    setTasks(data);
+    try {
+      const { data } = await API.get(`/tasks/project/${projectId}`);
+      setTasks(data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const fetchUsers = async () => {
-    const { data } = await API.get("/auth/approved"); // 👉 you must create this API
-    setUsers(data);
+    try {
+      const { data } = await API.get("/auth/approved");
+      setUsers(data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
@@ -30,37 +47,85 @@ export default function Tasks() {
     }
   }, []);
 
+  // =====================
+  // CREATE TASK (ADMIN)
+  // =====================
   const create = async () => {
-    if (!title || !assignedTo) return alert("Fill all fields");
+    if (!title || !assignedTo || !duration) {
+      return alert("Fill all fields");
+    }
 
-    await API.post("/tasks", {
-      title,
-      projectId,
-      assignedTo,
-    });
+    try {
+      await API.post("/tasks", {
+        title,
+        projectId,
+        assignedTo,
+        duration: Number(duration),
+      });
 
-    setTitle("");
-    setAssignedTo("");
-    fetchTasks();
+      setTitle("");
+      setAssignedTo("");
+      setDuration("");
+
+      fetchTasks();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create task");
+    }
   };
 
-  const update = async (id, status) => {
-    await API.put(`/tasks/${id}/status`, { status });
-    fetchTasks();
+  // =====================
+  // SUBMIT TASK (MEMBER)
+  // =====================
+  const submitTask = async (taskId) => {
+    try {
+      if (!links[taskId] && !files[taskId]) {
+        return alert("Upload file or add link!");
+      }
+
+      const formData = new FormData();
+      formData.append("status", "Done");
+
+      if (links[taskId]) {
+        formData.append("submissionLink", links[taskId]);
+      }
+
+      if (files[taskId]) {
+        formData.append("file", files[taskId]);
+      }
+
+      await API.put(`/tasks/${taskId}/status`, formData);
+
+      alert("Task Submitted!");
+
+      fetchTasks();
+    } catch (err) {
+      console.error(err.response?.data || err.message);
+      alert("Submission failed");
+    }
   };
 
   return (
     <div className="page">
       <div className="card">
-        <h2>Tasks</h2>
+        <h2>Project Tasks</h2>
 
-        {/* 🔥 ADMIN ONLY */}
+        {/* ================= ADMIN SECTION ================= */}
         {user?.role === "Admin" && (
-          <>
+          <div style={{ marginBottom: "20px" }}>
+            <h3>Create Task</h3>
+
             <input
               placeholder="Task title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+            />
+
+            <input
+              type="number"
+              placeholder="Duration (days)"
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
             />
 
             <select onChange={(e) => setAssignedTo(e.target.value)}>
@@ -72,23 +137,86 @@ export default function Tasks() {
               ))}
             </select>
 
-            <button onClick={create}>Add Task</button>
-          </>
+            <button onClick={create}>Create Task</button>
+          </div>
         )}
 
+        {/* ================= TASK LIST ================= */}
         <div className="list">
-          {tasks.map((t) => (
-            <div key={t._id} className="list-item">
-              <span>
-                {t.title} - {t.status}
-              </span>
+          {tasks.length === 0 ? (
+            <p>No tasks found</p>
+          ) : (
+            tasks.map((t) => (
+              <div key={t._id} className="list-item">
+                {/* LEFT */}
+                <div>
+                  <strong>{t.title}</strong>
+                  <p>Status: {t.status}</p>
 
-              {/* 🔥 MEMBER ONLY */}
-              {user?.role === "Member" && (
-                <button onClick={() => update(t._id, "Done")}>Mark Done</button>
-              )}
-            </div>
-          ))}
+                  <p>
+                    Due:{" "}
+                    {t.dueDate
+                      ? new Date(t.dueDate).toLocaleDateString()
+                      : "N/A"}
+                  </p>
+                </div>
+
+                {/* RIGHT */}
+                <div>
+                  {/* ================= MEMBER ================= */}
+                  {user?.role === "Member" && t.status !== "Done" && (
+                    <>
+                      <input
+                        type="text"
+                        placeholder="Submission link"
+                        value={links[t._id] || ""}
+                        onChange={(e) =>
+                          setLinks({
+                            ...links,
+                            [t._id]: e.target.value,
+                          })
+                        }
+                      />
+
+                      <input
+                        type="file"
+                        onChange={(e) =>
+                          setFiles({
+                            ...files,
+                            [t._id]: e.target.files[0],
+                          })
+                        }
+                      />
+
+                      <button onClick={() => submitTask(t._id)}>Submit</button>
+                    </>
+                  )}
+
+                  {/* ================= SUBMITTED VIEW ================= */}
+                  {t.status === "Done" && (
+                    <div>
+                      <p style={{ color: "green" }}>✔ Submitted</p>
+
+                      {t.submissionLink && (
+                        <a href={t.submissionLink} target="_blank">
+                          🔗 Link
+                        </a>
+                      )}
+
+                      {t.submissionFile && (
+                        <a
+                          href={`http://localhost:5000/${t.submissionFile}`}
+                          target="_blank"
+                        >
+                          📄 File
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

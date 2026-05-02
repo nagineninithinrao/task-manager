@@ -2,33 +2,29 @@ import express from "express";
 import {
   createTask,
   getTasks,
-  updateTaskStatus,
+  getMyTasks,
   getTasksByUser,
+  getTasksByProject,
+  updateTaskStatus,
+  updateTask,
+  deleteTask,
 } from "../controllers/taskController.js";
 
 import { protect } from "../middleware/authMiddleware.js";
-import { isAdmin } from "../middleware/roleMiddleware.js";
+import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
-/**
- * ADMIN → create task
- */
-router.post("/", protect, isAdmin, createTask);
+router.post("/", protect, createTask);
 
-/**
- * BOTH → get tasks (role-based filtering)
- */
-router.get("/:projectId", protect, getTasks);
+router.get("/", protect, getTasks);
+router.get("/my", protect, getMyTasks);
+router.get("/user/:userId", protect, getTasksByUser);
+router.get("/project/:projectId", protect, getTasksByProject);
 
-/**
- * MEMBER → update status
- */
-router.put("/:id/status", protect, updateTaskStatus);
+router.put("/:id/status", protect, upload.single("file"), updateTaskStatus);
 
-/**
- * 🔥 ADMIN → view tasks of specific user
- */
-router.get("/user/:userId", protect, isAdmin, getTasksByUser);
+router.put("/:id", protect, updateTask);
+router.delete("/:id", protect, deleteTask);
 
 export default router;

@@ -12,18 +12,44 @@ export default function Login() {
   const nav = useNavigate();
 
   const submit = async () => {
+    // 🔥 FRONTEND VALIDATION
+    if (!form.email || !form.password) {
+      setError("Please enter email and password");
+      return;
+    }
+
     try {
+      console.log("Sending login:", form); // DEBUG
+
       const { data } = await API.post("/auth/login", form);
+
+      console.log("Login success:", data); // DEBUG
+
+      // 🔒 ROLE VALIDATION (IMPORTANT)
+      if (role === "admin" && data.role !== "Admin") {
+        setError("This is not an admin account");
+        return;
+      }
+
+      if (role === "member" && data.role !== "Member") {
+        setError("This is not a member account");
+        return;
+      }
 
       login(data);
 
+      // 🔁 REDIRECT
       if (data.role === "Admin") {
         nav("/admin");
       } else {
         nav("/dashboard");
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      console.error("LOGIN ERROR:", err.response?.data);
+
+      setError(
+        err.response?.data?.message || "Login failed. Check credentials.",
+      );
     }
   };
 
@@ -36,18 +62,20 @@ export default function Login() {
 
         <input
           placeholder="Email"
+          value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
         />
 
         <input
           placeholder="Password"
           type="password"
+          value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
         />
 
         <button onClick={submit}>Login</button>
 
-        {/* 👇 Only for MEMBER */}
+        {/* MEMBER SIGNUP */}
         {role === "member" && (
           <p style={{ marginTop: "10px" }}>
             No account?{" "}

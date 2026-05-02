@@ -2,18 +2,58 @@ import mongoose from "mongoose";
 
 const taskSchema = new mongoose.Schema(
   {
-    title: String,
-    description: String,
-    projectId: { type: mongoose.Schema.Types.ObjectId, ref: "Project" },
-    assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    assignedTo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
     status: {
       type: String,
       enum: ["Todo", "In Progress", "Done"],
       default: "Todo",
     },
-    dueDate: Date,
+
+    duration: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+
+    dueDate: {
+      type: Date,
+    },
+    submissionLink: {
+      type: String,
+    },
+
+    submissionFile: {
+      type: String, // file path
+    },
+    projectId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project",
+      required: true,
+    },
   },
   { timestamps: true },
 );
+
+// ✅ CORRECT MONGOOSE HOOK (NO async, USE function)
+taskSchema.pre("save", function () {
+  if (this.isNew && this.duration) {
+    const now = new Date();
+
+    this.dueDate = new Date(
+      now.getTime() + this.duration * 24 * 60 * 60 * 1000,
+    );
+  }
+});
 
 export default mongoose.model("Task", taskSchema);

@@ -231,3 +231,55 @@ button:hover {
 .empty {
   color: #94a3b8;
 }
+.dashboard-container {
+  padding: 20px;
+  color: white;
+}
+
+.task-card {
+  background: #1e293b;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task-info h3 {
+  margin: 0;
+}
+
+.task-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.task-actions input {
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
+}
+
+.btn-submit {
+  background: #22c55e;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.done {
+  color: #22c55e;
+}
+
+.pending {
+  color: orange;
+}
+
+.submitted-section a {
+  display: block;
+  color: #3b82f6;
+}

@@ -13,11 +13,17 @@ connectDB();
 const app = express();
 
 app.use(cors());
+
+// ⚠️ IMPORTANT: JSON BEFORE ROUTES (OK here)
 app.use(express.json());
 
+// ROUTES
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/tasks", taskRoutes);
+
+// STATIC FILES (FOR FILE VIEW)
+app.use("/uploads", express.static("uploads"));
 
 app.get("/", (req, res) => {
   res.send("API Running...");

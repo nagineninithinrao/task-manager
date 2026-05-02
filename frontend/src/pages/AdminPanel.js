@@ -5,47 +5,48 @@ import AdminNavbar from "../components/Navbar";
 export default function AdminPanel() {
   const [tasks, setTasks] = useState([]);
 
-  const fetchData = async () => {
-    const projects = await API.get("/projects");
-
-    let allTasks = [];
-
-    for (let p of projects.data) {
-      const t = await API.get(`/tasks/${p._id}`);
-      allTasks = [...allTasks, ...t.data];
-    }
-
-    setTasks(allTasks);
-  };
-
   useEffect(() => {
-    fetchData();
+    fetchTasks();
   }, []);
+
+  const fetchTasks = async () => {
+    const { data } = await API.get("/tasks");
+    setTasks(data);
+  };
 
   const completed = tasks.filter((t) => t.status === "Done").length;
   const pending = tasks.filter((t) => t.status !== "Done").length;
+
+  const overdue = tasks.filter((t) => {
+    return new Date(t.dueDate) < new Date() && t.status !== "Done";
+  }).length;
 
   return (
     <div>
       <AdminNavbar />
 
       <div className="admin-container">
-        <h1>📊 Dashboard</h1>
+        <h1>Dashboard</h1>
 
         <div className="admin-stats">
           <div className="stat-card">
             <h2>{tasks.length}</h2>
-            <p>Total Tasks</p>
+            <p>Total</p>
           </div>
 
           <div className="stat-card">
             <h2>{pending}</h2>
-            <p>Pending Tasks</p>
+            <p>Pending</p>
           </div>
 
           <div className="stat-card">
             <h2>{completed}</h2>
-            <p>Completed Tasks</p>
+            <p>Completed</p>
+          </div>
+
+          <div className="stat-card">
+            <h2>{overdue}</h2>
+            <p>Overdue</p>
           </div>
         </div>
       </div>
