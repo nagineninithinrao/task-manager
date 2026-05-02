@@ -1,7 +1,7 @@
 import express from "express";
 import {
   createTask,
-  getTasks,
+  getAllTasks,
   getMyTasks,
   getTasksByUser,
   getTasksByProject,
