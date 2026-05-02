@@ -17,7 +17,7 @@ const router = express.Router();
 
 router.post("/", protect, createTask);
 
-router.get("/", protect, getTasks);
+router.get("/", protect, getAllTasks);
 router.get("/my", protect, getMyTasks);
 router.get("/user/:userId", protect, getTasksByUser);
 router.get("/project/:projectId", protect, getTasksByProject);
