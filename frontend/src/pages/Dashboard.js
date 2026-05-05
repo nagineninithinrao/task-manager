@@ -7,7 +7,6 @@ export default function Dashboard() {
   const [links, setLinks] = useState({});
   const [files, setFiles] = useState({});
 
-  // 🔥 FETCH TASKS
   const fetchTasks = async () => {
     try {
       const { data } = await API.get("/tasks/my");
@@ -21,12 +20,10 @@ export default function Dashboard() {
     fetchTasks();
   }, []);
 
-  // 🔥 SUBMIT TASK (FIXED)
   const submitTask = async (taskId) => {
     try {
       const formData = new FormData();
 
-      // ✅ MUST INCLUDE STATUS
       formData.append("status", "Done");
 
       if (links[taskId]) {
@@ -37,7 +34,6 @@ export default function Dashboard() {
         formData.append("file", files[taskId]); // 🔥 must match backend
       }
 
-      // 🔍 DEBUG
       console.log("Submitting:");
       for (let pair of formData.entries()) {
         console.log(pair[0], pair[1]);
@@ -47,7 +43,6 @@ export default function Dashboard() {
 
       alert("Task Submitted Successfully!");
 
-      // reset inputs
       setLinks((prev) => ({ ...prev, [taskId]: "" }));
       setFiles((prev) => ({ ...prev, [taskId]: null }));
 
@@ -89,11 +84,9 @@ export default function Dashboard() {
                 </p>
               </div>
 
-              {/* RIGHT */}
               <div className="task-actions">
                 {task.status !== "Done" ? (
                   <>
-                    {/* LINK INPUT */}
                     <input
                       type="text"
                       placeholder="Submission link"
@@ -106,7 +99,6 @@ export default function Dashboard() {
                       }
                     />
 
-                    {/* FILE INPUT */}
                     <input
                       type="file"
                       onChange={(e) =>
@@ -117,7 +109,6 @@ export default function Dashboard() {
                       }
                     />
 
-                    {/* SUBMIT BUTTON */}
                     <button
                       className="btn-submit"
                       onClick={() => submitTask(task._id)}
@@ -127,7 +118,7 @@ export default function Dashboard() {
                   </>
                 ) : (
                   <div className="submitted-section">
-                    <p>✅ Submitted</p>
+                    <p> Submitted</p>
 
                     {task.submissionLink && (
                       <a
@@ -135,17 +126,17 @@ export default function Dashboard() {
                         target="_blank"
                         rel="noreferrer"
                       >
-                        🔗 View Link
+                        View Link
                       </a>
                     )}
 
                     {task.submissionFile && (
                       <a
-                        href={`http://localhost:5000/${task.submissionFile}`}
+                        href={`https://task-manager-production-b480.up.railway.app/${task.submissionFile}`}
                         target="_blank"
                         rel="noreferrer"
                       >
-                        📄 View File
+                        View File
                       </a>
                     )}
                   </div>

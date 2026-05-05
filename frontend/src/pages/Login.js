@@ -12,20 +12,18 @@ export default function Login() {
   const nav = useNavigate();
 
   const submit = async () => {
-    // 🔥 FRONTEND VALIDATION
     if (!form.email || !form.password) {
       setError("Please enter email and password");
       return;
     }
 
     try {
-      console.log("Sending login:", form); // DEBUG
+      console.log("Sending login:", form);
 
       const { data } = await API.post("/auth/login", form);
 
-      console.log("Login success:", data); // DEBUG
+      console.log("Login success:", data);
 
-      // 🔒 ROLE VALIDATION (IMPORTANT)
       if (role === "admin" && data.role !== "Admin") {
         setError("This is not an admin account");
         return;
@@ -38,7 +36,6 @@ export default function Login() {
 
       login(data);
 
-      // 🔁 REDIRECT
       if (data.role === "Admin") {
         nav("/admin");
       } else {
@@ -75,7 +72,6 @@ export default function Login() {
 
         <button onClick={submit}>Login</button>
 
-        {/* MEMBER SIGNUP */}
         {role === "member" && (
           <p style={{ marginTop: "10px" }}>
             No account?{" "}

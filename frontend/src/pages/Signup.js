@@ -17,7 +17,7 @@ export default function Signup() {
     try {
       await API.post("/auth/signup", form);
       alert("Signup request sent. Wait for admin approval.");
-      nav("/login/member"); // ✅ FIXED
+      nav("/login/member");
     } catch (err) {
       setError(err.response?.data?.message || "Error");
     }

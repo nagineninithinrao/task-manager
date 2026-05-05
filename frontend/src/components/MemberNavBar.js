@@ -3,17 +3,17 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 export default function MemberNavbar() {
-  const { logout } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const nav = useNavigate();
 
   return (
     <div className="navbar">
-      <h2>👤 Member</h2>
+      <h2> {user?.name || "User"}</h2>
 
       <div className="nav-links">
         <Link to="/dashboard">Tasks</Link>
-        <Link to="/team">TeamMembers</Link>
-        <Link to="/contact">Contact</Link>
+        <Link to="/member/contact">Contact</Link>
+
         <button
           onClick={() => {
             logout();

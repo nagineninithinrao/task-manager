@@ -18,6 +18,7 @@ export default function Navbar() {
       <div className="nav-links">
         <Link to="/admin">Dashboard</Link>
         <Link to="/admin/approvals">Approvals</Link>
+        <Link to="/admin/projects">Projects</Link>
         <Link to="/admin/tasks">Tasks</Link>
         <Link to="/admin/contact">Contact</Link>
         <button onClick={handleLogout}>Logout</button>

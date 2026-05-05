@@ -1,70 +1,215 @@
-# Getting Started with Create React App
+# 🚀 Team Task Manager (Full-Stack)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack web application that allows teams to manage projects, assign tasks, and track progress with **role-based access (Admin & Member)**.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🌐 Live Demo
 
-### `npm start`
+- 🔗 Frontend: https://your-frontend.vercel.app
+- 🔗 Backend API: https://task-manager-production-b480.up.railway.app
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 📌 Features
 
-### `npm test`
+### 🔐 Authentication
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- User Signup & Login (JWT-based)
+- Role-based access (Admin / Member)
+- Admin approval required for member login
 
-### `npm run build`
+### 👑 Admin Capabilities
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Create & manage projects
+- Add / remove (deactivate) members
+- Assign tasks to members
+- Edit & delete tasks
+- View submitted tasks (link/file)
+- Dashboard with task statistics
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 👤 Member Capabilities
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- View assigned tasks
+- Submit tasks (via link or file upload)
+- Track task status (Todo / Done)
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🏗️ Tech Stack
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Frontend
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- React.js
+- Axios
+- React Router
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Backend
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- Node.js
+- Express.js
+- MongoDB (Mongoose)
+- JWT Authentication
+- Multer (file uploads)
 
 ### Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- Backend → Railway
+- Frontend → Vercel
+- Database → MongoDB Atlas
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 📂 Folder Structure
+
+```
+task-manager/
+│
+├── backend/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── utils/
+│   └── server.js
+│
+├── frontend/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── pages/
+│   │   └── App.js
+│
+└── README.md
+```
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1️⃣ Clone Repository
+
+```
+git clone https://github.com/your-username/task-manager.git
+cd task-manager
+```
+
+---
+
+### 2️⃣ Backend Setup
+
+```
+cd backend
+npm install
+```
+
+Create `.env` file:
+
+```
+MONGO_URI=your_mongodb_url
+JWT_SECRET=your_secret_key
+PORT=5000
+```
+
+Run server:
+
+```
+npm start
+```
+
+---
+
+### 3️⃣ Frontend Setup
+
+```
+cd frontend
+npm install
+npm start
+```
+
+---
+
+## 🔑 Default Admin Setup
+
+Admin is created manually in database.
+
+Example:
+
+```
+email: admin@gmail.com
+password: admin123
+role: Admin
+isApproved: true
+```
+
+---
+
+## 📊 API Endpoints
+
+### Auth
+
+- POST `/api/auth/signup`
+- POST `/api/auth/login`
+- GET `/api/auth/approved`
+
+### Projects
+
+- POST `/api/projects`
+- GET `/api/projects`
+- POST `/api/projects/:id/add-member`
+- PUT `/api/projects/:id/remove-member`
+- GET `/api/projects/:id/members`
+
+### Tasks
+
+- POST `/api/tasks`
+- GET `/api/tasks/project/:projectId`
+- GET `/api/tasks/user/:userId`
+- PUT `/api/tasks/:id/status`
+- PUT `/api/tasks/:id`
+- DELETE `/api/tasks/:id`
+
+---
+
+## 📸 Screenshots
+
+_(Add screenshots here for better presentation)_
+
+---
+
+## 🎥 Demo Video
+
+## https://drive.google.com/file/d/10T5ji6ud1COWaGF5StOrB8Xx7Q8cx1Pm/view?usp=sharing
+
+## 🚀 Deployment
+
+### Backend (Railway)
+
+- Connect GitHub repo
+- Set root directory → `backend`
+- Add environment variables
+
+### Frontend (Vercel)
+
+- Import repo
+- Set root directory → `frontend`
+
+---
+
+## 🧠 Future Improvements
+
+- 📊 Dashboard analytics (charts)
+- 🔔 Notifications system
+- 📅 Task deadlines with alerts
+- 🌙 Dark mode UI
+
+---
+
+## 👨‍💻 Author
+
+**Nagineni Nithin Rao**
+
+- 💼 Aspiring Software Developer
+- 🔗 GitHub: https://github.com/nagineninithinrao

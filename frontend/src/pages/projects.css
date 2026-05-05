@@ -1,0 +1,143 @@
+-box {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.project-card {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 10px;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.project-header h3 {
+  margin: 0;
+}
+
+.actio.createns {
+  display: flex;
+  gap: 8px;
+}
+
+.actions button {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.actions button {
+  background: #3b82f6;
+  color: white;
+}
+
+.actions button.success {
+  background: #16a34a;
+}
+
+.actions button.danger {
+  background: #ef4444;
+}
+
+.dropdown {
+  margin-top: 15px;
+  padding: 10px;
+  background: #0f172a;
+  border-radius: 8px;
+}
+
+.member-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 8px 0;
+  padding: 6px 0;
+  border-bottom: 1px solid #334155;
+}
+
+.member-row button.danger {
+  background: #ef4444;
+  color: white;
+  padding: 5px 10px;
+}
+
+.member-row button.success {
+  background: #16a34a;
+  color: white;
+  padding: 5px 10px;
+}
+
+.empty {
+  color: #94a3b8;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.project-card:hover {
+  transform: translateY(-2px);
+  transition: 0.2s;
+}
+.create-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.create-box input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 14px;
+  background: white;
+  color: black;
+}
+
+.create-box button {
+  padding: 12px 18px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.create-box button:hover {
+  background: #2563eb;
+}
+@media (max-width: 768px) {
+  .project-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .actions {
+    flex-wrap: wrap;
+  }
+
+  .member-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+}

@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminApprovals from "./pages/AdminApprovals";
 import AdminTasks from "./pages/AdminTask";
 import AdminContact from "./pages/AdminContact";
+import MemberNavbar from "./components/MemberNavBar";
 function App() {
   return (
     <AuthProvider>
@@ -32,6 +33,7 @@ function App() {
           <Route path="/admin/approvals" element={<AdminApprovals />} />
           <Route path="/admin/tasks" element={<AdminTasks />} />
           <Route path="/admin/contact" element={<AdminContact />} />
+          <Route path="/member/contact" element={<MemberNavbar />} />
           <Route
             path="/dashboard"
             element={
@@ -40,7 +42,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/projects" element={<Projects />} />
+          <Route path="/admin/projects" element={<Projects />} />
           <Route path="/tasks/:projectId" element={<Tasks />} />
         </Routes>
       </BrowserRouter>

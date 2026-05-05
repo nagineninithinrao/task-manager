@@ -7,7 +7,8 @@ export default function AdminTasks() {
   const [users, setUsers] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
-
+  const [projects, setProjects] = useState([]);
+  const [projectId, setProjectId] = useState("");
   // assign modal
   const [showModal, setShowModal] = useState(false);
   const [taskText, setTaskText] = useState("");
@@ -19,9 +20,8 @@ export default function AdminTasks() {
   const [editTitle, setEditTitle] = useState("");
   const [editDuration, setEditDuration] = useState("");
 
-  // =====================
   // FETCH USERS
-  // =====================
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -34,18 +34,29 @@ export default function AdminTasks() {
       console.error(err);
     }
   };
+  useEffect(() => {
+    fetchUsers();
+    fetchProjects();
+  }, []);
 
-  // =====================
+  const fetchProjects = async () => {
+    try {
+      const { data } = await API.get("/projects");
+      setProjects(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   // ASSIGN TASK
-  // =====================
   const openModal = (user) => {
     setSelectedUser(user);
     setShowModal(true);
   };
 
   const assignTask = async () => {
-    if (!taskText || !duration) {
-      return alert("Enter task and duration");
+    if (!taskText || !duration || !projectId) {
+      return alert("Enter task, duration & select project");
     }
 
     try {
@@ -53,12 +64,14 @@ export default function AdminTasks() {
         title: taskText,
         assignedTo: selectedUser._id,
         duration: Number(duration),
+        projectId,
       });
 
       alert("Task Assigned!");
 
       setTaskText("");
       setDuration("");
+      setProjectId("");
       setShowModal(false);
     } catch (err) {
       console.error(err);
@@ -66,9 +79,8 @@ export default function AdminTasks() {
     }
   };
 
-  // =====================
   // VIEW TASKS
-  // =====================
+
   const viewTasks = async (userId) => {
     try {
       const { data } = await API.get(`/tasks/user/${userId}`);
@@ -79,9 +91,8 @@ export default function AdminTasks() {
     }
   };
 
-  // =====================
   // EDIT TASK
-  // =====================
+
   const openEdit = (task) => {
     setEditTask(task);
     setEditTitle(task.title);
@@ -106,9 +117,8 @@ export default function AdminTasks() {
     }
   };
 
-  // =====================
   // DELETE TASK
-  // =====================
+
   const deleteTaskHandler = async (id) => {
     if (!window.confirm("Delete this task?")) return;
 
@@ -130,7 +140,6 @@ export default function AdminTasks() {
       <div className="admin-container">
         <h2>Members Task Management</h2>
 
-        {/* ================= TABLE ================= */}
         <table className="modern-table">
           <thead>
             <tr>
@@ -166,7 +175,6 @@ export default function AdminTasks() {
           </tbody>
         </table>
 
-        {/* ================= TASK LIST ================= */}
         {tasks.length > 0 && (
           <div className="task-list">
             <h3>Tasks</h3>
@@ -189,9 +197,8 @@ export default function AdminTasks() {
                     {t.status}
                   </span>
 
-                  {/* ACTION BUTTONS */}
                   <div style={{ marginTop: "10px" }}>
-                    <button onClick={() => openEdit(t)}>✏️ Edit</button>
+                    <button onClick={() => openEdit(t)}> Edit</button>
 
                     <button
                       onClick={() => deleteTaskHandler(t._id)}
@@ -201,25 +208,24 @@ export default function AdminTasks() {
                         color: "white",
                       }}
                     >
-                      🗑 Delete
+                      Delete
                     </button>
                   </div>
 
-                  {/* VIEW SUBMISSION */}
                   {t.status === "Done" && (
                     <div style={{ marginTop: "8px" }}>
                       {t.submissionLink && (
                         <a href={t.submissionLink} target="_blank">
-                          🔗 View Link
+                          View Link
                         </a>
                       )}
 
                       {t.submissionFile && (
                         <a
-                          href={`http://localhost:5000/${t.submissionFile}`}
+                          href={`https://task-manager-production-b480.up.railway.app/${t.submissionFile}`}
                           target="_blank"
                         >
-                          📄 View File
+                          View File
                         </a>
                       )}
                     </div>
@@ -231,7 +237,6 @@ export default function AdminTasks() {
         )}
       </div>
 
-      {/* ================= ASSIGN MODAL ================= */}
       {showModal && selectedUser && (
         <div className="modal-overlay">
           <div className="modal">
@@ -242,6 +247,17 @@ export default function AdminTasks() {
               value={taskText}
               onChange={(e) => setTaskText(e.target.value)}
             />
+            <select
+              value={projectId}
+              onChange={(e) => setProjectId(e.target.value)}
+            >
+              <option value="">Select Project</option>
+              {projects.map((p) => (
+                <option key={p._id} value={p._id}>
+                  {p.title}
+                </option>
+              ))}
+            </select>
 
             <input
               type="number"
@@ -258,7 +274,6 @@ export default function AdminTasks() {
         </div>
       )}
 
-      {/* ================= EDIT MODAL ================= */}
       {editModal && (
         <div className="modal-overlay">
           <div className="modal">

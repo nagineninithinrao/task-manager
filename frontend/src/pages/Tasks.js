@@ -1,4 +1,3 @@
-// src/pages/Tasks.js
 import { useEffect, useState, useContext } from "react";
 import API from "../api/axios";
 import { useParams } from "react-router-dom";
@@ -19,9 +18,7 @@ export default function Tasks() {
   const [links, setLinks] = useState({});
   const [files, setFiles] = useState({});
 
-  // =====================
   // FETCH TASKS
-  // =====================
   const fetchTasks = async () => {
     try {
       const { data } = await API.get(`/tasks/project/${projectId}`);
@@ -47,9 +44,7 @@ export default function Tasks() {
     }
   }, []);
 
-  // =====================
-  // CREATE TASK (ADMIN)
-  // =====================
+  // CREATE TASK
   const create = async () => {
     if (!title || !assignedTo || !duration) {
       return alert("Fill all fields");
@@ -74,9 +69,7 @@ export default function Tasks() {
     }
   };
 
-  // =====================
-  // SUBMIT TASK (MEMBER)
-  // =====================
+  // SUBMIT TASK
   const submitTask = async (taskId) => {
     try {
       if (!links[taskId] && !files[taskId]) {
@@ -110,7 +103,6 @@ export default function Tasks() {
       <div className="card">
         <h2>Project Tasks</h2>
 
-        {/* ================= ADMIN SECTION ================= */}
         {user?.role === "Admin" && (
           <div style={{ marginBottom: "20px" }}>
             <h3>Create Task</h3>
@@ -141,7 +133,6 @@ export default function Tasks() {
           </div>
         )}
 
-        {/* ================= TASK LIST ================= */}
         <div className="list">
           {tasks.length === 0 ? (
             <p>No tasks found</p>
@@ -163,7 +154,6 @@ export default function Tasks() {
 
                 {/* RIGHT */}
                 <div>
-                  {/* ================= MEMBER ================= */}
                   {user?.role === "Member" && t.status !== "Done" && (
                     <>
                       <input
@@ -192,23 +182,22 @@ export default function Tasks() {
                     </>
                   )}
 
-                  {/* ================= SUBMITTED VIEW ================= */}
                   {t.status === "Done" && (
                     <div>
                       <p style={{ color: "green" }}>✔ Submitted</p>
 
                       {t.submissionLink && (
                         <a href={t.submissionLink} target="_blank">
-                          🔗 Link
+                          Link
                         </a>
                       )}
 
                       {t.submissionFile && (
                         <a
-                          href={`http://localhost:5000/${t.submissionFile}`}
+                          href={`https://task-manager-production-b480.up.railway.app/${t.submissionFile}`}
                           target="_blank"
                         >
-                          📄 File
+                          File
                         </a>
                       )}
                     </div>
