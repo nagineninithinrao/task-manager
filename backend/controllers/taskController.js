@@ -1,6 +1,6 @@
 import Task from "../models/Task.js";
 
-// ================= CREATE TASK (ADMIN) =================
+// CREATE TASK
 export const createTask = async (req, res) => {
   try {
     const { title, assignedTo, duration, projectId } = req.body;
@@ -23,7 +23,7 @@ export const createTask = async (req, res) => {
   }
 };
 
-// ================= GET ALL TASKS (ADMIN) =================
+//GET ALL TASKS
 export const getTasks = async (req, res) => {
   try {
     const tasks = await Task.find().populate("assignedTo", "name email");
@@ -33,7 +33,7 @@ export const getTasks = async (req, res) => {
   }
 };
 
-// ================= MEMBER TASKS =================
+// MEMBER TASKS
 export const getMyTasks = async (req, res) => {
   try {
     const tasks = await Task.find({ assignedTo: req.user.id });
@@ -43,12 +43,11 @@ export const getMyTasks = async (req, res) => {
   }
 };
 
-// ================= UPDATE STATUS (SUBMISSION) =================
+// UPDATE STATUS
 export const updateTaskStatus = async (req, res) => {
   try {
     const { submissionLink } = req.body;
 
-    // ❗ MUST HAVE LINK OR FILE
     if (!submissionLink && !req.file) {
       return res.status(400).json({
         message: "Submission link or file required",
@@ -73,7 +72,7 @@ export const updateTaskStatus = async (req, res) => {
   }
 };
 
-// ================= UPDATE TASK =================
+// UPDATE TASK
 export const updateTask = async (req, res) => {
   try {
     const { title, duration } = req.body;
@@ -92,19 +91,19 @@ export const updateTask = async (req, res) => {
   }
 };
 
-// ================= DELETE =================
+// DELETE
 export const deleteTask = async (req, res) => {
   await Task.findByIdAndDelete(req.params.id);
   res.json({ message: "Deleted" });
 };
 
-// ================= ADMIN VIEW USER TASKS =================
+// ADMIN VIEW USER TASKS
 export const getTasksByUser = async (req, res) => {
   const tasks = await Task.find({ assignedTo: req.params.userId });
   res.json(tasks);
 };
 
-// ================= PROJECT TASKS =================
+// PROJECT TASKS
 export const getTasksByProject = async (req, res) => {
   const tasks = await Task.find({
     projectId: req.params.projectId,

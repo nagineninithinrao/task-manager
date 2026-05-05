@@ -34,7 +34,7 @@ const taskSchema = new mongoose.Schema(
     },
 
     submissionFile: {
-      type: String, // file path
+      type: String,
     },
     projectId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -45,7 +45,6 @@ const taskSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-// ✅ CORRECT MONGOOSE HOOK (NO async, USE function)
 taskSchema.pre("save", function () {
   if (this.isNew && this.duration) {
     const now = new Date();

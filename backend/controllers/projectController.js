@@ -1,9 +1,8 @@
 import Project from "../models/Project.js";
 import User from "../models/User.js";
 
-// =====================
 // CREATE PROJECT
-// =====================
+
 export const createProject = async (req, res) => {
   try {
     const { title, description } = req.body;
@@ -21,9 +20,8 @@ export const createProject = async (req, res) => {
   }
 };
 
-// =====================
 // GET PROJECTS
-// =====================
+
 export const getProjects = async (req, res) => {
   try {
     const projects = await Project.find({
@@ -36,9 +34,8 @@ export const getProjects = async (req, res) => {
   }
 };
 
-// =====================
-// ADD MEMBER (ADMIN)
-// =====================
+// ADD MEMBER
+
 export const addMember = async (req, res) => {
   try {
     const { userId } = req.body;
@@ -60,9 +57,8 @@ export const addMember = async (req, res) => {
   }
 };
 
-// =====================
 // GET PROJECT MEMBERS
-// =====================
+
 export const getProjectMembers = async (req, res) => {
   try {
     const project = await Project.findById(req.params.id).populate(
@@ -80,9 +76,8 @@ export const getProjectMembers = async (req, res) => {
   }
 };
 
-// =====================
-// REMOVE MEMBER (ADMIN)
-// =====================
+// REMOVE MEMBER
+
 export const removeMember = async (req, res) => {
   try {
     const { userId } = req.body;
@@ -93,7 +88,6 @@ export const removeMember = async (req, res) => {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    // ❌ prevent removing admin/creator
     if (userId === project.createdBy.toString()) {
       return res.status(400).json({
         message: "Cannot remove project owner",

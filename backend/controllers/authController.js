@@ -3,9 +3,8 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import generateToken from "../utils/generateToken.js";
 
-// =====================
 // MEMBER SIGNUP
-// =====================
+
 export const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -38,9 +37,8 @@ export const signup = async (req, res) => {
   }
 };
 
-// =====================
 // LOGIN
-// =====================
+
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -63,6 +61,7 @@ export const login = async (req, res) => {
     res.json({
       token: generateToken(user._id, user.role),
       role: user.role,
+      name: user.name,
     });
   } catch (err) {
     console.log("LOGIN ERROR:", err);
@@ -70,9 +69,8 @@ export const login = async (req, res) => {
   }
 };
 
-// =====================
-// GET PENDING USERS (ADMIN)
-// =====================
+// GET PENDING USERS
+
 export const getPendingUsers = async (req, res) => {
   try {
     const users = await User.find({ isApproved: false });
@@ -82,9 +80,8 @@ export const getPendingUsers = async (req, res) => {
   }
 };
 
-// =====================
-// APPROVE USER (ADMIN)
-// =====================
+// APPROVE USER
+
 export const approveUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -100,9 +97,8 @@ export const approveUser = async (req, res) => {
   }
 };
 
-// =====================
-// 🔥 GET APPROVED MEMBERS (NEW API)
-// =====================
+//GET APPROVED MEMBERS
+
 export const getApprovedUsers = async (req, res) => {
   try {
     const users = await User.find({

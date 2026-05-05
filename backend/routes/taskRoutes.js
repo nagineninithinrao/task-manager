@@ -16,19 +16,15 @@ import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
-// ADMIN ONLY CREATE
 router.post("/", protect, isAdmin, createTask);
 
-// GET
 router.get("/", protect, isAdmin, getTasks);
 router.get("/my", protect, getMyTasks);
 router.get("/user/:userId", protect, isAdmin, getTasksByUser);
 router.get("/project/:projectId", protect, getTasksByProject);
 
-// SUBMIT TASK
 router.put("/:id/status", protect, upload.single("file"), updateTaskStatus);
 
-// EDIT / DELETE
 router.put("/:id", protect, isAdmin, updateTask);
 router.delete("/:id", protect, isAdmin, deleteTask);
 
